@@ -5,7 +5,7 @@
   "type": "module",
   "main": "dist/index.js",
   "bin": {
-    "commitlint-lite": "./dist/cli.js"
+    "commitlint-lite": "dist/cli.js"
   },
   "scripts": {
     "build": "tsc",
