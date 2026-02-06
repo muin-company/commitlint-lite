@@ -1,0 +1,37 @@
+{
+  "name": "commitlint-lite",
+  "version": "1.0.0",
+  "description": "Lightweight commit message linter. Conventional Commits validation with zero dependencies.",
+  "type": "module",
+  "main": "dist/index.js",
+  "bin": {
+    "commitlint-lite": "./dist/cli.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "test": "node --test dist/test.js",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "commitlint",
+    "conventional-commits",
+    "git",
+    "lint",
+    "commit-message",
+    "validation",
+    "cli"
+  ],
+  "author": "MUIN",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "devDependencies": {
+    "typescript": "^5.7.3"
+  }
+}
