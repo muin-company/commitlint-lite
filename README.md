@@ -121,34 +121,119 @@ Examples:
 
 ## Examples
 
-### Valid Commits
+### Example 1: Valid commits (various formats)
 
 ```bash
-commitlint-lite "feat: add login feature"
-# ✓ Commit message is valid
+$ commitlint-lite "feat: add login feature"
+✓ Commit message is valid
 
-commitlint-lite "fix(auth): resolve token expiration"
-# ✓ Commit message is valid
+$ commitlint-lite "fix(auth): resolve token expiration"
+✓ Commit message is valid
 
-commitlint-lite "docs: update README"
-# ✓ Commit message is valid
+$ commitlint-lite "docs: update README"
+✓ Commit message is valid
+
+$ commitlint-lite "feat!: breaking API change"
+✓ Commit message is valid (breaking change marker)
 ```
 
-### Invalid Commits
+All exit with code 0.
+
+### Example 2: Invalid format
 
 ```bash
-commitlint-lite "added new stuff"
-# ✗ Commit message validation failed:
-#   • Invalid commit message format. Expected: type(scope): description
-
-commitlint-lite "invalid: test"
-# ✗ Commit message validation failed:
-#   • Invalid commit type "invalid". Allowed types: feat, fix, docs, ...
-
-commitlint-lite "feat:"
-# ✗ Commit message validation failed:
-#   • Commit description is required
+$ commitlint-lite "added new stuff"
+✗ Commit message validation failed:
+  • Invalid commit message format. Expected: type(scope): description
+  
+$ commitlint-lite "Update README"
+✗ Commit message validation failed:
+  • Invalid commit message format. Expected: type(scope): description
+  • Must start with a valid type (feat, fix, docs, etc.)
 ```
+
+Exit code: 1 (blocks commit in git hook)
+
+### Example 3: Invalid type
+
+```bash
+$ commitlint-lite "invalid: test feature"
+✗ Commit message validation failed:
+  • Invalid commit type "invalid". Allowed types: feat, fix, docs, style, refactor, test, chore, ci, perf, build, revert
+
+$ commitlint-lite "feature: add login"
+✗ Commit message validation failed:
+  • Invalid commit type "feature". Did you mean "feat"?
+```
+
+Catches typos and enforces standard types.
+
+### Example 4: Length violation
+
+```bash
+$ commitlint-lite "feat: add comprehensive user authentication system with OAuth2, JWT tokens, refresh mechanism, and role-based access control for enterprise users"
+✗ Commit message validation failed:
+  • Commit message exceeds maximum length (148 > 100 characters)
+  • Consider shortening: "feat: add user authentication with OAuth2 and RBAC"
+```
+
+Enforces concise commit messages.
+
+### Example 5: Git hook in action
+
+After running `commitlint-lite --init-hook`:
+
+```bash
+$ git commit -m "added stuff"
+✗ Commit message validation failed:
+  • Invalid commit message format. Expected: type(scope): description
+
+Commit aborted.
+
+$ git commit -m "feat: add user dashboard"
+✓ Commit message is valid
+[main abc123d] feat: add user dashboard
+ 1 file changed, 50 insertions(+)
+```
+
+Catches bad commits before they enter history.
+
+### Example 6: Multi-line commit with body
+
+```bash
+$ commitlint-lite "feat(api): add user endpoints
+
+Implemented CRUD operations for user management:
+- GET /api/users
+- POST /api/users
+- PUT /api/users/:id
+- DELETE /api/users/:id"
+
+✓ Commit message is valid
+```
+
+Only the first line is validated; body is preserved.
+
+### Example 7: Required scope configuration
+
+With `.commitlintrc.json`:
+```json
+{
+  "requireScope": true,
+  "types": ["feat", "fix", "docs"]
+}
+```
+
+```bash
+$ commitlint-lite "feat: add login"
+✗ Commit message validation failed:
+  • Scope is required. Use format: type(scope): description
+
+$ commitlint-lite "feat(auth): add login"
+✓ Commit message is valid
+```
+
+Enforces scope for better categorization.
 
 ## Programmatic Usage
 
